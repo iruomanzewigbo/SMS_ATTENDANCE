@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📲 GSM Attendance System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+        }
+        table {
+            border: 2px solid black !important;  /* Ensure visible table borders */
+        }
+        th, td {
+            border: 2px solid black !important; /* Make all table cells have a visible border */
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white text-center">
+                <h2>GSM-Based Attendance System</h2>
+            </div>
+            <div class="card-body text-center">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceTable">
+                            <!-- Data will be dynamically inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <small class="text-muted">Data updates every 5 seconds ⏳</small>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function fetchAttendance() {
+            $.getJSON('/attendance', function(data) {
+                let tableBody = $('#attendanceTable');
+                tableBody.empty();
+                
+                if (data.length === 0) {
+                    tableBody.append('<tr><td colspan="4" class="text-danger">No attendance records found</td></tr>');
+                    return;
+                }
+
+                data.forEach(row => {
+                    tableBody.append(`<tr>
+                        <td>${row.id}</td>
+                        <td>${row.student_id}</td>
+                        <td>${row.name}</td>
+                        <td>${row.timestamp}</td>
+                    </tr>`);
+                });
+            });
+        }
+
+        fetchAttendance();
+        setInterval(fetchAttendance, 5000); // Refresh every 5 seconds
+    </script>
+
+</body>
+</html>

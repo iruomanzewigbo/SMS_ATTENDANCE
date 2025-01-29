@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📲 SMS Attendance System</title>
+    <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <header>
+            <h1 class="text-center mb-4 text-primary">Student Attendance System</h1>
+        </header>
+
+        <section>
+            <h2 class="text-center mb-4">Mark Your Attendance</h2>
+            <form action="/attendance" method="POST" class="bg-white p-4 rounded shadow-sm">
+                <div class="mb-3">
+                    <label for="student_id" class="form-label">Student ID</label>
+                    <input type="text" class="form-control" id="student_id" name="student_id" required placeholder="Enter your Student ID">
+                </div>
+                <div class="mb-3">
+                    <label for="student_name" class="form-label">Student Name</label>
+                    <input type="text" class="form-control" id="student_name" name="student_name" required placeholder="Enter your full name">
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Submit Attendance</button>
+            </form>
+        </section>
+
+    </div>
+
+    <!-- <script src="bootstrap/js/bootstrap.bundle.min.js"></script> -->
+
+    <script>
+        function fetchAttendance() {
+            $.getJSON('/attendance', function(data) {
+                let tableBody = $('#attendanceTable');
+                tableBody.empty();
+                
+                if (data.length === 0) {
+                    tableBody.append('<tr><td colspan="4" class="text-danger text-center">No attendance records found</td></tr>');
+                    return;
+                }
+
+                data.forEach((row, index) => {
+                    tableBody.append(`<tr>
+                        <td>${index + 1}</td>
+                        <td>${row.student_id}</td>
+                        <td>${row.name}</td>
+                        <td>${row.timestamp}</td>
+                    </tr>`);
+                });
+            });
+        }
+
+        fetchAttendance();
+        setInterval(fetchAttendance, 5000); // Refresh every 5 seconds
+    </script>
+
+</body>
+</html>
